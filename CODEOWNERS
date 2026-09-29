@@ -1,0 +1,3 @@
+# Owners of the front-door site. Roles are listed in .github/code-owner-roles.yml
+# (personal GitHub accounts have no teams). See scripts/review_gate.py.
+* @portal-maintainers

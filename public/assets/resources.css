@@ -1,0 +1,249 @@
+/* Nerdience Resources front door. Same tokens as the portals' nerdience.css. */
+:root {
+  --nd-yellow: #ffcc00;
+  --nd-yellow-strong: #f0b800;
+  --nd-black: #0b0b0c;
+  --nd-ink: #16161a;
+  --nd-graphite: #2a2a30;
+  --nd-radius: 10px;
+
+  --bg: #fafafa;
+  --surface: #ffffff;
+  --text: #16161a;
+  --muted: #6b6b73;
+  --border: #e7e7ea;
+  --shadow: 0 1px 2px rgb(0 0 0 / 4%), 0 8px 24px rgb(0 0 0 / 6%);
+  --font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f0f11;
+    --surface: #141417;
+    --text: #ececef;
+    --muted: #9a9aa3;
+    --border: #26262b;
+    --shadow: 0 1px 2px rgb(0 0 0 / 40%), 0 8px 24px rgb(0 0 0 / 30%);
+  }
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--nd-yellow); outline-offset: 3px; }
+
+/* ---------- top bar (same as the portals' switcher) */
+.bar {
+  background: var(--nd-black);
+  color: #fff;
+  border-bottom: 1px solid #1f1f23;
+}
+.bar__inner {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+  height: 3.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.bar__logo { height: 1.25rem; width: auto; display: block; }
+.bar__title {
+  font-weight: 600;
+  font-size: .95rem;
+  padding-left: 1rem;
+  border-left: 1px solid #2a2a30;
+  white-space: nowrap;
+}
+.bar__spacer { flex: 1; }
+.bar__note { font-size: .78rem; color: #a1a1aa; white-space: nowrap; }
+.bar__link {
+  font-size: .85rem;
+  color: #d4d4d8;
+  text-decoration: none;
+  padding: .35rem .7rem;
+  border: 1px solid #2a2a30;
+  border-radius: 999px;
+}
+.bar__link:hover { border-color: var(--nd-yellow); color: #fff; }
+.bar::after {
+  content: "";
+  display: block;
+  height: 3px;
+  width: 12rem;
+  background: var(--nd-yellow);
+}
+
+/* ---------- landing (always dark, brand page) */
+.landing {
+  background: var(--nd-black);
+  color: #fff;
+}
+.landing .bar { border-bottom: 0; }
+.landing .bar::after { display: none; }
+.hero {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  padding: 3rem 1rem 4rem;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  /* subtle grid, like the portal home hero */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgb(255 255 255 / 4%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 255 255 / 4%) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
+}
+.hero__box { position: relative; max-width: 40rem; text-align: center; }
+.eyebrow {
+  font-family: var(--mono);
+  font-size: .75rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--nd-yellow);
+  margin: 0 0 1rem;
+}
+.hero h1 {
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  line-height: 1.1;
+  letter-spacing: -.02em;
+  margin: 0 0 1rem;
+}
+.hero h1 span { color: var(--nd-yellow); }
+.hero p.lead { color: #c4c4cc; font-size: 1.1rem; margin: 0 auto 2rem; max-width: 32rem; }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  padding: .85rem 1.6rem;
+  border-radius: 999px;
+  background: var(--nd-yellow);
+  color: var(--nd-black);
+  border: 0;
+  transition: background .15s, transform .15s;
+}
+.btn:hover { background: var(--nd-yellow-strong); transform: translateY(-1px); }
+.btn--ghost {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.btn--ghost:hover { background: transparent; border-color: var(--nd-yellow); }
+.hero .hint { color: #8b8b94; font-size: .85rem; margin-top: 1.25rem; }
+.steps {
+  display: flex;
+  justify-content: center;
+  gap: .5rem 1.5rem;
+  flex-wrap: wrap;
+  margin: 2.5rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: .85rem;
+  color: #a1a1aa;
+}
+.steps b {
+  display: inline-grid;
+  place-items: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 50%;
+  background: #1f1f23;
+  color: var(--nd-yellow);
+  font-size: .72rem;
+  margin-right: .4rem;
+}
+
+/* ---------- inner pages */
+.main { flex: 1; width: 100%; max-width: 72rem; margin: 0 auto; padding: 3rem 1rem 4rem; }
+.main h1 { font-size: clamp(1.75rem, 3.5vw, 2.4rem); letter-spacing: -.02em; line-height: 1.15; margin: 0 0 .5rem; }
+.main h1::after {
+  content: "";
+  display: block;
+  width: 3rem;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--nd-yellow);
+  margin-top: .8rem;
+}
+.who { color: var(--muted); margin: 1rem 0 2.25rem; min-height: 1.5em; }
+.who b { color: var(--text); }
+
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: 1.25rem; }
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+  text-decoration: none;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--nd-radius);
+  padding: 1.75rem;
+  box-shadow: var(--shadow);
+  position: relative;
+  transition: border-color .15s, transform .15s;
+}
+.card:hover { border-color: var(--nd-yellow); transform: translateY(-2px); }
+.card::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 1.75rem; bottom: 1.75rem;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--nd-yellow);
+}
+.card__num { font-family: var(--mono); font-size: .75rem; color: var(--muted); letter-spacing: .08em; }
+.card__title { font-size: 1.35rem; font-weight: 700; margin: 0; }
+.card__text { color: var(--muted); margin: 0; flex: 1; }
+.card__go { font-weight: 600; font-size: .9rem; }
+.card__go::after { content: " →"; color: var(--nd-yellow-strong); }
+
+.note {
+  margin-top: 2.5rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--nd-yellow);
+  border-radius: var(--nd-radius);
+  background: var(--surface);
+  color: var(--muted);
+  font-size: .92rem;
+}
+.note b { color: var(--text); }
+
+.center { max-width: 38rem; }
+.center p { color: var(--muted); }
+.center ul { color: var(--muted); padding-left: 1.2rem; }
+.center li { margin: .35rem 0; }
+.actions { display: flex; gap: .75rem; flex-wrap: wrap; margin-top: 1.75rem; }
+
+.foot {
+  background: var(--nd-black);
+  color: #a1a1aa;
+  font-size: .8rem;
+  border-top: 2px solid var(--nd-yellow);
+}
+.landing .foot { border-top: 1px solid #1f1f23; }
+.foot__inner { max-width: 72rem; margin: 0 auto; padding: 1.1rem 1rem; }
+
+@media (max-width: 40rem) {
+  .bar__note, .bar__title { display: none; }
+  .main { padding-top: 2rem; }
+}

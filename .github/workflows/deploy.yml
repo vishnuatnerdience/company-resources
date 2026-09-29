@@ -1,0 +1,63 @@
+# Runs only after a change is merged into main.
+# Publishes public/ to the Cloudflare Pages project "nerdience-resources".
+name: Deploy to Cloudflare Pages
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pull-requests: read   # review gate: find the PR and its approvals
+  checks: read          # review gate: confirm the PR's checks passed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - run: pip install "pathspec==0.12.1" "PyYAML==6.0.2"
+
+      # Review gate: the free-plan substitute for branch protection (plan §5).
+      # FIRST DEPLOY: the very first push creates main (no pull request can exist
+      # yet), so the gate is skipped only for that branch-creating push. Every
+      # later change must come through a pull request.
+      - name: Review gate (merged PR, passing checks, code-owner approval)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+          BEFORE: ${{ github.event.before }}
+          # MOCK MODE while .github/code-owner-roles.yml still has TODO names.
+          REQUIRED_APPROVALS: "0"
+          REQUIRE_CODE_OWNER_APPROVAL: "false"
+        run: |
+          if [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then
+            echo "First push creating main: review gate skipped (no pull request can exist yet)."
+          else
+            python scripts/review_gate.py
+          fi
+
+      - name: Site checks
+        run: python scripts/check_site.py
+
+      - name: Ensure Cloudflare Pages project exists
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+        run: |
+          npx wrangler pages project list | grep -q "nerdience-resources" || \
+          npx wrangler pages project create nerdience-resources --production-branch=main
+
+      - name: Publish to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          command: pages deploy public --project-name=nerdience-resources --branch=main

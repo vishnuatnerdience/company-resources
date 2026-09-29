@@ -1,0 +1,3 @@
+# Who holds each CODEOWNERS role. GitHub usernames only (no emails).
+# Entries starting with TODO are placeholders and never count as approvals.
+portal-maintainers: [vishnuatnerdience, TODO_second_maintainer]

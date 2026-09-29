@@ -1,0 +1,46 @@
+# Runs on every pull request BEFORE anything can be merged into main.
+# Same gate as the two portal repositories, adapted to a plain HTML site.
+name: Pull Request Checks
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install check dependencies (pinned)
+        run: pip install "pathspec==0.12.1" "PyYAML==6.0.2"
+
+      - name: Check CODEOWNERS roles are defined
+        run: python scripts/review_gate.py --lint
+
+      - name: Site checks (noindex, local references, no external scripts)
+        run: python scripts/check_site.py
+
+      - name: Validate HTML
+        run: npx --yes html-validate@9.5.5 "public/**/*.html"
+
+      - name: Scan for committed secrets
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # --offline: external links (the portals, which need a login) are skipped.
+      # cdn-cgi/access: Cloudflare's sign-out address, which exists only on the live site.
+      - name: Check for broken links
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --offline --no-progress --exclude 'cdn-cgi/access' --root-dir "${{ github.workspace }}/public" 'public/**/*.html'
+          fail: true

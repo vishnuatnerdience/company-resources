@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Choose a portal · Nerdience Resources</title>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+  <link rel="stylesheet" href="../assets/resources.css">
+</head>
+<body>
+  <!-- This page is protected by the Cloudflare Access app "Resources home".
+       Reaching it means the person has signed in. -->
+  <header class="bar">
+    <div class="bar__inner">
+      <a href="../"><img class="bar__logo" src="../assets/nerdience-logo-white.webp" alt="Nerdience" width="120" height="20"></a>
+      <span class="bar__title">Resources</span>
+      <span class="bar__spacer"></span>
+      <a class="bar__link" href="/cdn-cgi/access/logout">Sign out</a>
+    </div>
+  </header>
+
+  <main class="main">
+    <h1>Choose a portal</h1>
+    <p class="who" id="who">You are signed in.</p>
+
+    <div class="cards">
+      <a class="card" href="https://nerdience-engineering.pages.dev/">
+        <span class="card__num">01 · ENGINEERING + OPERATIONS</span>
+        <h2 class="card__title">Engineering</h2>
+        <p class="card__text">Development standards, architecture, infrastructure, DevOps, SRE, security and runbooks.</p>
+        <span class="card__go">Open Engineering</span>
+      </a>
+      <a class="card" href="https://nerdience-hr-general.pages.dev/">
+        <span class="card__num">02 · MANAGEMENT + PEOPLE OPERATIONS</span>
+        <h2 class="card__title">HR &amp; General</h2>
+        <p class="card__text">Company handbook, HR policies, onboarding, internal operations and shared templates.</p>
+        <span class="card__go">Open HR &amp; General</span>
+      </a>
+    </div>
+
+    <p class="note"><b>Access is per team.</b> Each portal, and each section inside it, is open only
+      to the teams that own or use it. If you open something that is not available to you, you
+      will see a "no access" page. Ask your lead or a portal maintainer if you need more access.</p>
+  </main>
+
+  <footer class="foot">
+    <div class="foot__inner">Copyright &copy; 2026 Nerdience Technologies Private Limited &middot; Internal use only</div>
+  </footer>
+
+  <script>
+    // Show who is signed in. Cloudflare Access serves this endpoint on
+    // protected hostnames; if it is unavailable the page still works.
+    fetch("/cdn-cgi/access/get-identity", { credentials: "same-origin" })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (id) {
+        if (id && id.email) {
+          var who = document.getElementById("who");
+          who.textContent = "";
+          who.append("Signed in as ");
+          var b = document.createElement("b");
+          b.textContent = id.email;
+          who.append(b);
+        }
+      })
+      .catch(function () {});
+  </script>
+</body>
+</html>

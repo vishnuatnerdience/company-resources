@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>No access · Nerdience Resources</title>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+  <link rel="stylesheet" href="../assets/resources.css">
+</head>
+<body>
+  <!-- PUBLIC page (no Access app). Cloudflare Access redirects here when a
+       signed-in person is not allowed into a whole portal, so it must not be
+       inside any protected portal (that would loop). Contains no internal
+       information. -->
+  <header class="bar">
+    <div class="bar__inner">
+      <a href="../"><img class="bar__logo" src="../assets/nerdience-logo-white.webp" alt="Nerdience" width="120" height="20"></a>
+      <span class="bar__title">Resources</span>
+      <span class="bar__spacer"></span>
+      <a class="bar__link" href="/cdn-cgi/access/logout">Sign out</a>
+    </div>
+  </header>
+
+  <main class="main center">
+    <h1 id="title">You don't have access to this portal</h1>
+    <p>You are signed in, but your account is not allowed to open <span id="what">this portal</span>.
+      Each portal is open only to the teams that own or use it.</p>
+    <ul>
+      <li>If you need it for your work, ask your lead or a portal maintainer to give you access.</li>
+      <li>If you signed in with the wrong email, sign out and sign in again with your work email.</li>
+    </ul>
+    <div class="actions">
+      <a class="btn" href="../home/">Back to portals</a>
+      <a class="btn btn--ghost" href="/cdn-cgi/access/logout">Sign out</a>
+    </div>
+  </main>
+
+  <footer class="foot">
+    <div class="foot__inner">Copyright &copy; 2026 Nerdience Technologies Private Limited &middot; Internal use only</div>
+  </footer>
+
+  <script>
+    // Optional ?portal=engineering|hr|resources, set in each Access app's Deny URL.
+    var names = { engineering: "the Engineering portal", hr: "the HR & General portal",
+                  resources: "the Knowledge Portal" };
+    var p = new URLSearchParams(location.search).get("portal");
+    if (names[p]) { document.getElementById("what").textContent = names[p]; }
+  </script>
+</body>
+</html>
