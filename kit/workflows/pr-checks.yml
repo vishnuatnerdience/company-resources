@@ -22,13 +22,34 @@ jobs:
         with:
           fetch-depth: 0              # gitleaks + "Recently updated" need history
 
+      # Use the kit from a company-resources branch with the SAME name as this
+      # PR's branch if one exists (kit + content changed together), else main.
+      - name: Choose the portal kit version
+        id: kit
+        env:
+          BRANCH: ${{ github.head_ref }}
+        run: |
+          if git ls-remote --exit-code --heads https://github.com/vishnuatnerdience/company-resources.git "$BRANCH" >/dev/null 2>&1; then
+            echo "ref=$BRANCH" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref=main" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Get the shared portal kit (theme + build scripts)
         uses: actions/checkout@v7
         with:
           repository: vishnuatnerdience/company-resources
-          ref: main                   # pin to a tag/commit for reproducible builds
+          ref: ${{ steps.kit.outputs.ref }}
           path: _kit
           # token: ${{ secrets.KIT_READ_TOKEN }}   # needed once company-resources is private
+
+      - name: Check the kit is present
+        run: |
+          echo "Using portal kit from company-resources@${{ steps.kit.outputs.ref }}"
+          test -f "$KIT/requirements.txt" || {
+            echo "::error::company-resources@${{ steps.kit.outputs.ref }} has no kit/. Merge the kit into company-resources main, or push a company-resources branch named '${{ github.head_ref }}'."
+            exit 1
+          }
 
       - uses: actions/setup-python@v6
         with: { python-version: "3.12" }
