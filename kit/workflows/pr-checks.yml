@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: read   # gitleaks-action lists the PR's commits to scan them
 
 env:
   PORTAL_REPO: ${{ github.event.repository.name }}
@@ -71,6 +72,7 @@ jobs:
         uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_ENABLE_COMMENTS: false   # commenting needs write access; findings still fail the check
 
       - name: Build every site of this repo (menus, sections, related docs generated)
         run: python $KIT/scripts/build_all.py
