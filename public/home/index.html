@@ -4,69 +4,130 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
-  <title>Choose a portal · Nerdience Resources</title>
+  <meta name="theme-color" content="#0b0b0c">
+  <title>Your portals · Nerdience Resources</title>
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap">
   <link rel="stylesheet" href="../assets/resources.css">
 </head>
 <body>
-  <!-- This page is protected by the Cloudflare Access app "Resources home".
-       Reaching it means the person has signed in. -->
+  <!-- Protected by the Cloudflare Access app "Resources home" (/home/*):
+       reaching this page means the person has signed in.
+       Default: go straight to the first portal in login_order that the person
+       may open (Access sends a denied person to /home/next/, which tries the
+       next one). With ?choose: show every portal instead. -->
+  <a class="skip" href="#main">Skip to content</a>
   <header class="bar">
     <div class="bar__inner">
-      <a href="../"><img class="bar__logo" src="../assets/nerdience-logo-white.webp" alt="Nerdience" width="120" height="20"></a>
-      <span class="bar__title">Resources</span>
+      <a class="bar__home" href="../"><img class="bar__logo" src="../assets/nerdience-logo-white.webp" alt="Nerdience home" width="120" height="20"><span class="bar__title">Resources</span></a>
       <span class="bar__spacer"></span>
-      <a class="bar__link" href="/cdn-cgi/access/logout">Sign out</a>
+      <span class="bar__note">Internal · employees only</span>
+      <a class="bar__link" href="/cdn-cgi/access/logout">
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M10 3h9a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-9v-2h9V5h-9V3Zm-.5 4.5L11 9l-2 2h8v2H9l2 2-1.5 1.5L5 12l4.5-4.5Z"/></svg>
+        <span>Sign out</span>
+      </a>
     </div>
   </header>
 
-  <main class="main">
-    <h1>Choose a portal</h1>
-    <p class="who" id="who">You are signed in.</p>
-
-    <div class="cards">
-      <a class="card" href="https://nerdience-engineering.pages.dev/">
-        <span class="card__num">01 · ENGINEERING + OPERATIONS</span>
-        <h2 class="card__title">Engineering</h2>
-        <p class="card__text">Development standards, architecture, infrastructure, DevOps, SRE, security and runbooks.</p>
-        <span class="card__go">Open Engineering</span>
-      </a>
-      <a class="card" href="https://nerdience-hr-general.pages.dev/">
-        <span class="card__num">02 · MANAGEMENT + PEOPLE OPERATIONS</span>
-        <h2 class="card__title">HR &amp; General</h2>
-        <p class="card__text">Company handbook, HR policies, onboarding, internal operations and shared templates.</p>
-        <span class="card__go">Open HR &amp; General</span>
-      </a>
+  <main class="main" id="main">
+    <div class="going" id="going" hidden>
+      <span class="going__spinner" aria-hidden="true"></span>
+      <p class="going__text" role="status">Taking you to your portal…</p>
+      <a class="going__alt" href="?choose">Show all portals instead</a>
     </div>
 
-    <p class="note"><b>Access is per team.</b> Each portal, and each section inside it, is open only
-      to the teams that own or use it. If you open something that is not available to you, you
-      will see a "no access" page. Ask your lead or a portal maintainer if you need more access.</p>
+    <div id="chooser">
+      <div class="page-head">
+        <h1>Your portals</h1>
+        <p class="who" id="who">You are signed in</p>
+      </div>
+
+      <h2 class="label">Portals</h2>
+      <!-- generated:cards:start -->
+    <ul class="cards">
+      <li>
+        <a class="card" href="https://nerdience-engineering.pages.dev/">
+          <span class="card__icon"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="m8.7 7.1 1.4 1.4L6.6 12l3.5 3.5-1.4 1.4L3.8 12l4.9-4.9Zm6.6 0 4.9 4.9-4.9 4.9-1.4-1.4 3.5-3.5-3.5-3.5 1.4-1.4Z"/></svg></span>
+          <h3 class="card__title">Engineering</h3>
+          <span class="card__who">Engineering team</span>
+          <p class="card__text">Development standards, architecture, infrastructure, DevOps, SRE, security and runbooks.</p>
+          <span class="card__go">Open Engineering</span>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="https://nerdience-hr-general.pages.dev/">
+          <span class="card__icon"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M12 3 2 8l10 5 8-4v6h2V8L12 3Zm-6 9.2V16c0 1.7 2.7 3 6 3s6-1.3 6-3v-3.8l-6 3-6-3Z"/></svg></span>
+          <h3 class="card__title">HR &amp; General</h3>
+          <span class="card__who">Everyone at Nerdience</span>
+          <p class="card__text">Company handbook, HR policies, onboarding, ways of working and FAQ.</p>
+          <span class="card__go">Open HR &amp; General</span>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="https://nerdience-management.pages.dev/">
+          <span class="card__icon"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M4 19h16v2H2V3h2v16Zm3-2V11h3v6H7Zm5 0V7h3v10h-3Zm5 0v-4h3v4h-3Z"/></svg></span>
+          <h3 class="card__title">Management</h3>
+          <span class="card__who">Management team</span>
+          <p class="card__text">Approved strategy and internal management processes.</p>
+          <span class="card__go">Open Management</span>
+        </a>
+      </li>
+    </ul>
+      <!-- generated:cards:end -->
+
+      <h2 class="label">Popular</h2>
+      <ul class="quick">
+        <li><a href="https://nerdience-hr-general.pages.dev/people/onboarding/onboarding-checklist/"><b>Onboarding checklist</b><span>New here? Start with this</span></a></li>
+        <li><a href="https://nerdience-hr-general.pages.dev/people/policies/leave-policy/"><b>Leave policy</b><span>Types of leave and how to apply</span></a></li>
+        <li><a href="https://nerdience-hr-general.pages.dev/operations/tools/tools-and-access/"><b>Tools and access</b><span>Which tools we use, how to get access</span></a></li>
+      </ul>
+
+      <div class="note" role="note">
+        <p><b>Access is per portal.</b> Each portal is open only to the teams that use it, and a
+          folder that needs a smaller audience has its own portal. If you see "no access" and need
+          it for your work, ask your lead or the docs team.</p>
+      </div>
+    </div>
   </main>
 
   <footer class="foot">
     <div class="foot__inner">Copyright &copy; 2026 Nerdience Technologies Private Limited &middot; Internal use only</div>
   </footer>
 
+  <!-- generated:data:start -->
+  <script type="application/json" id="nd-portals">{"order": ["engineering", "hr-general"], "sites": {"engineering": {"title": "Engineering", "url": "https://nerdience-engineering.pages.dev/"}, "hr-general": {"title": "HR & General", "url": "https://nerdience-hr-general.pages.dev/"}, "management": {"title": "Management", "url": "https://nerdience-management.pages.dev/"}}}</script>
+  <!-- generated:data:end -->
   <script>
-    // Show who is signed in. Cloudflare Access serves this endpoint on
-    // protected hostnames; if it is unavailable the page still works.
-    fetch("/cdn-cgi/access/get-identity", { credentials: "same-origin" })
-      .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (id) {
-        if (id && id.email) {
-          var who = document.getElementById("who");
-          who.textContent = "";
-          who.append("Signed in as ");
-          var b = document.createElement("b");
-          b.textContent = id.email;
-          who.append(b);
-        }
-      })
-      .catch(function () {});
+    (function () {
+      var data = JSON.parse(document.getElementById("nd-portals").textContent || "{}");
+      var params = new URLSearchParams(location.search);
+      var order = data.order || [];
+      if (!params.has("choose") && order.length && data.sites[order[0]]) {
+        // Sign-in flow: try the portals in login_order. Access sends a denied
+        // person to /home/next/, which continues while this marker is fresh.
+        document.getElementById("chooser").hidden = true;
+        document.getElementById("going").hidden = false;
+        try { sessionStorage.setItem("nd-login-chain", String(Date.now())); } catch (e) {}
+        location.replace(data.sites[order[0]].url);
+        return;
+      }
+      // Chooser: show who is signed in (Cloudflare Access serves this endpoint).
+      fetch("/cdn-cgi/access/get-identity", { credentials: "same-origin" })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (id) {
+          if (id && id.email) {
+            var who = document.getElementById("who");
+            who.textContent = "";
+            who.append("Signed in as ");
+            var b = document.createElement("b");
+            b.textContent = id.email;
+            who.append(b);
+          }
+        })
+        .catch(function () {});
+    })();
   </script>
 </body>
 </html>

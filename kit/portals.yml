@@ -1,0 +1,81 @@
+# THE one file that decides which portal sites exist, which folders go into
+# each, and who may open them. Read by every build (both content repositories)
+# and by the front door. Change it by pull request; portal maintainers approve.
+#
+# How a page finds its site
+#   Each page in a repository belongs to the site of that repository whose
+#   `folders` entry is the LONGEST match for the page's path under docs/.
+#   ""  = everything not claimed by another site (exactly one per repository).
+#   So a NEW folder automatically joins the repository's main site, and a
+#   folder (or sub-folder) listed under another site is moved out of the main
+#   site completely: its pages, menu titles and search entries are only in the
+#   other site.
+#
+# access
+#   everyone        every signed-in @<email_domain> employee
+#   [group, ...]    Cloudflare Access group names; members are managed in the
+#                   Cloudflare dashboard, never in Git
+# classifications   values a page in this site may have (plan §4); CI rejects
+#                   anything else, so a `restricted` page can never land in an
+#                   all-employee site by accident.
+# login_order       sites tried, in this order, right after sign-in: the person
+#                   lands in the FIRST one they are allowed into, and can switch
+#                   from the top bar. Sites not listed are reached from the
+#                   switcher or the "All portals" page (/home/?choose).
+#
+# After changing this file: python kit/scripts/render_front_door.py (front door
+# cards, sign-in order, downloads); CI fails if it was forgotten.
+
+email_domain: nerdience.com
+project_prefix: nerdience-          # Cloudflare Pages project = prefix + site id
+host_suffix: pages.dev              # becomes resources.nerdience.com subdomains later
+admins_group: portal-admins         # always allowed; the only group on preview URLs
+front_door: https://nerdience-resources.pages.dev
+contribute_email: wikki@nerdience.com
+github_owner: vishnuatnerdience     # repositories: <owner>/<site repo>; used for the docs team's "edit" button
+session_duration: 24h
+
+login_order: [engineering, hr-general]
+
+sites:
+  engineering:
+    repo: company-engineering
+    title: Engineering
+    description: Development standards, architecture, infrastructure, DevOps, SRE, security and runbooks.
+    audience: Engineering team          # shown on the front door card
+    icon: code                          # code | people | chart | folder
+    folders: [""]
+    access: [engineering]
+    classifications: [internal, restricted]
+    order: 1
+
+  hr-general:
+    repo: company-hr-general
+    title: HR & General
+    description: Company handbook, HR policies, onboarding, ways of working and FAQ.
+    audience: Everyone at Nerdience
+    icon: people
+    folders: [""]
+    access: everyone
+    classifications: [public, internal]
+    order: 2
+
+  management:
+    repo: company-hr-general
+    title: Management
+    description: Approved strategy and internal management processes.
+    audience: Management team
+    icon: chart
+    folders: [management]
+    access: [management]
+    classifications: [internal, restricted]
+    order: 3
+
+  # Folder-level example (not enabled): give one sub-folder its own audience.
+  # people-performance:
+  #   repo: company-hr-general
+  #   title: Performance
+  #   folders: [people/performance]
+  #   access: [people-ops]
+  #   classifications: [restricted]
+  #   order: 4
