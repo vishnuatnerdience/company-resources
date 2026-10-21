@@ -1,0 +1,64 @@
+# Copy of company-resources/kit/workflows/pr-checks.yml. Runs on every pull
+# request. Job name "validate" is what the review gate looks for before deploying.
+name: Pull Request Checks
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+env:
+  PORTAL_REPO: ${{ github.event.repository.name }}
+  KIT: _kit/kit
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      # Pin every action to a full commit SHA before production use (audit F-20).
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0              # gitleaks + "Recently updated" need history
+
+      - name: Get the shared portal kit (theme + build scripts)
+        uses: actions/checkout@v7
+        with:
+          repository: vishnuatnerdience/company-resources
+          ref: main                   # pin to a tag/commit for reproducible builds
+          path: _kit
+          # token: ${{ secrets.KIT_READ_TOKEN }}   # needed once company-resources is private
+
+      - uses: actions/setup-python@v6
+        with: { python-version: "3.12" }
+
+      - run: pip install -r $KIT/requirements.txt
+
+      - name: Validate metadata (every page checked against its site's rules)
+        run: python $KIT/scripts/validate.py
+
+      - name: Check CODEOWNERS roles
+        run: python $KIT/scripts/review_gate.py --lint
+
+      - name: Lint Markdown style
+        uses: DavidAnson/markdownlint-cli2-action@v20
+        with:
+          globs: "docs/**/*.md"
+
+      - name: Scan for committed secrets
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build every site of this repo (menus, sections, related docs generated)
+        run: python $KIT/scripts/build_all.py
+
+      - name: Check links inside each built site
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --offline --no-progress --root-dir "${{ github.workspace }}/build" 'build/*/site/**/*.html'
+          fail: true
+
+      - name: Show what would change in Cloudflare (dry run, no credentials)
+        run: python $KIT/scripts/sync_access.py

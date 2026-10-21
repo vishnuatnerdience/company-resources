@@ -1,0 +1,13 @@
+# markdownlint configuration for this documentation portal.
+# Runs locally (npx markdownlint-cli2 "docs/**/*.md") and in pr-checks.yml.
+config:
+  default: true
+  # Prose paragraphs are not wrapped at 80 characters in this portal.
+  MD013: false
+  # Each page carries its title in frontmatter AND as a visible "# H1".
+  # Don't count the frontmatter title as a second top-level heading.
+  MD025:
+    front_matter_title: ""
+  # Landing-page hero and cards are raw HTML (scripts/build_landing_pages.py).
+  MD033:
+    allowed_elements: [div, p, a, span, h1]

@@ -10,9 +10,9 @@ catches the mistakes that matter for it:
   3. no page loads scripts from other websites (only Google Fonts CSS is
      allowed from outside);
   4. no page uses plain http:// links;
-  5. the public pages contain no links into the portals' sections, so the
-     public site reveals nothing about internal structure beyond the two
-     portal names.
+  5. the public pages contain no links into the portals (hosts read from
+     kit/portals.yml), so the public site reveals nothing about internal structure;
+  6. the template downloads exist.
 
 Usage: python scripts/check_site.py
 """
@@ -25,7 +25,16 @@ from urllib.parse import urlparse
 PUBLIC = Path("public")
 PUBLIC_PAGES = {"index.html", "no-access/index.html"}   # not behind Access
 ALLOWED_EXTERNAL_CSS = ("https://fonts.googleapis.com/",)
-PORTAL_HOSTS = ("nerdience-engineering.pages.dev", "nerdience-hr-general.pages.dev")
+
+
+def portal_hosts():
+    """Every portal hostname in kit/portals.yml (public pages must not link to them)."""
+    import yaml
+    cfg = yaml.safe_load(Path("kit/portals.yml").read_text(encoding="utf-8"))
+    return tuple(f"{cfg['project_prefix']}{sid}.{cfg['host_suffix']}" for sid in cfg["sites"])
+
+
+PORTAL_HOSTS = portal_hosts()
 
 
 class Refs(HTMLParser):
@@ -78,7 +87,7 @@ def main():
             if not target.exists():
                 errors.append(f"{rel}: broken local reference: {ref}")
 
-    for required in ("robots.txt", "_headers"):
+    for required in ("robots.txt", "_headers", "downloads/template.md", "downloads/example.md"):
         if not (PUBLIC / required).exists():
             errors.append(f"public/{required} is missing")
 

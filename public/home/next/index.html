@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#0b0b0c">
+  <title>Finding your portal · Nerdience Resources</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../assets/resources.css">
+</head>
+<body>
+  <!-- Cloudflare Access "deny URL" of every portal in login_order
+       (set by kit/scripts/sync_access.py): /home/next/?from=<portal>.
+       Behind the "Resources home" app, so the portal list is never public.
+       During sign-in (marker set by /home/ less than 2 minutes ago) it tries
+       the next portal; otherwise it shows the public no-access page. -->
+  <main class="main" id="main">
+    <div class="going">
+      <span class="going__spinner" aria-hidden="true"></span>
+      <p class="going__text" role="status">Finding a portal you can open…</p>
+      <a class="going__alt" href="../?choose">Show all portals</a>
+    </div>
+  </main>
+
+  <!-- generated:data:start -->
+  <script type="application/json" id="nd-portals">{"order": ["engineering", "hr-general"], "sites": {"engineering": {"title": "Engineering", "url": "https://nerdience-engineering.pages.dev/"}, "hr-general": {"title": "HR & General", "url": "https://nerdience-hr-general.pages.dev/"}, "management": {"title": "Management", "url": "https://nerdience-management.pages.dev/"}}}</script>
+  <!-- generated:data:end -->
+  <script>
+    (function () {
+      var data = JSON.parse(document.getElementById("nd-portals").textContent || "{}");
+      var order = data.order || [];
+      var from = new URLSearchParams(location.search).get("from") || "";
+      var started = 0;
+      try { started = Number(sessionStorage.getItem("nd-login-chain")) || 0; } catch (e) {}
+      var signingIn = Date.now() - started < 120000;
+      var i = order.indexOf(from);
+      if (signingIn && i >= 0 && i < order.length - 1 && data.sites[order[i + 1]]) {
+        try { sessionStorage.setItem("nd-login-chain", String(Date.now())); } catch (e) {}
+        location.replace(data.sites[order[i + 1]].url);
+        return;
+      }
+      try { sessionStorage.removeItem("nd-login-chain"); } catch (e) {}
+      location.replace("../../no-access/?portal=" + encodeURIComponent(from));
+    })();
+  </script>
+</body>
+</html>

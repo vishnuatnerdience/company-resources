@@ -26,6 +26,12 @@ jobs:
       - name: Check CODEOWNERS roles are defined
         run: python scripts/review_gate.py --lint
 
+      - name: Portal kit unit tests (used by both content repositories)
+        run: python -m unittest discover -s kit/tests -v
+
+      - name: Front door matches kit/portals.yml (cards, sign-in order, downloads)
+        run: python kit/scripts/render_front_door.py --check
+
       - name: Site checks (noindex, local references, no external scripts)
         run: python scripts/check_site.py
 

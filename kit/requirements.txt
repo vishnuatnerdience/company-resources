@@ -1,0 +1,5 @@
+# Pinned tools for CI and local builds. Before production, regenerate with hashes
+# (pip-compile --generate-hashes) so transitive dependencies are locked too (audit F-20).
+zensical==0.0.65
+PyYAML==6.0.2
+pathspec==0.12.1

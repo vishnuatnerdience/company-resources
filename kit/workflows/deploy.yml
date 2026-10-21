@@ -1,0 +1,80 @@
+# Copy of company-resources/kit/workflows/deploy.yml. Runs after a merge to main:
+#   review gate -> validate -> build -> Access sync -> guard -> deploy -> smoke
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read   # review gate: find the PR and its approvals
+  checks: read          # review gate: confirm the PR's checks passed
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+env:
+  PORTAL_REPO: ${{ github.event.repository.name }}
+  KIT: _kit/kit
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with: { fetch-depth: 0 }
+
+      - uses: actions/checkout@v7
+        with:
+          repository: vishnuatnerdience/company-resources
+          ref: main
+          path: _kit
+          # token: ${{ secrets.KIT_READ_TOKEN }}
+
+      - uses: actions/setup-python@v6
+        with: { python-version: "3.12" }
+
+      - run: pip install -r $KIT/requirements.txt
+
+      # Free-plan substitute for branch protection: publish only commits merged
+      # from a PR whose checks passed and that another person approved.
+      - name: Review gate
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+          REQUIRED_APPROVALS: "0"              # "1" once a second docs-team member exists
+          REQUIRE_CODE_OWNER_APPROVAL: "false" # "true" once roles have real names
+        run: python $KIT/scripts/review_gate.py
+
+      - run: python $KIT/scripts/validate.py
+
+      - name: Build every site of this repo
+        run: python $KIT/scripts/build_all.py
+
+      - name: Create/update Pages projects and Access apps from portals.yml
+        env:
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          CF_ACCESS_TOKEN: ${{ secrets.CF_ACCESS_TOKEN }}
+        run: python $KIT/scripts/sync_access.py --apply
+
+      - name: Guard - refuse to deploy if any site is reachable without login
+        run: python $KIT/scripts/smoke.py --before-deploy
+
+      - name: Deploy each site
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_PAGES_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          WRANGLER_VERSION: "PIN-ME"   # set an exact wrangler version before first use
+        run: |
+          python $KIT/scripts/portal.py | while read -r site project; do
+            npx --yes "wrangler@${WRANGLER_VERSION}" pages deploy "build/$site/site" \
+              --project-name="$project" --branch=main
+          done
+
+      - name: Smoke test - every site requires login
+        run: python $KIT/scripts/smoke.py

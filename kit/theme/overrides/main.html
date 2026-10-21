@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{#- Department switcher: one site per department, one portal experience (plan v2.1, A3). -#}
+{% block announce %}
+  {%- set portals = config.extra.portals or [] -%}
+  <nav class="nd-switch" aria-label="Departments">
+    {%- if config.extra.home_url %}
+    <a class="nd-switch__brand" href="{{ config.extra.home_url }}" title="All departments">Nerdience<span>/</span>Resources</a>
+    {%- else %}
+    <span class="nd-switch__brand">Nerdience<span>/</span>Resources</span>
+    {%- endif %}
+    <span class="nd-switch__sep" aria-hidden="true"></span>
+    <div class="nd-switch__depts">
+      {%- for p in portals %}
+        <a href="{{ p.url }}"{% if p.id == config.extra.portal %} aria-current="page"{% endif %}>{{ p.name }}</a>
+      {%- endfor %}
+    </div>
+    <span class="nd-switch__note">Internal · employees only</span>
+    {#- Cloudflare Access sign-out: ends the session for every department site. -#}
+    <a class="nd-switch__signout" href="{{ config.site_url }}cdn-cgi/access/logout" aria-label="Sign out">
+      <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M10 3h9a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-9v-2h9V5h-9V3Zm-.5 4.5L11 9l-2 2h8v2H9l2 2-1.5 1.5L5 12l4.5-4.5Z"/></svg>
+      <span>Sign out</span>
+    </a>
+  </nav>
+{% endblock %}
+
+{#- Document information from the required frontmatter (plan §4). -#}
+{% block content %}
+  {%- set m = page.meta -%}
+  {%- if page.url == "" or m.utility_page %}
+    {#- Home and utility pages (no-access, generated sections): no floating "edit" button. -#}
+    <style>.md-content__button, .md-tags { display: none; }</style>
+  {%- endif %}
+  {%- if m.owner and page.url != "" and not m.utility_page %}
+    <div class="nd-meta" role="note" aria-label="Document information">
+      <div class="nd-meta__badges">
+        {%- if m.status %}
+          <span class="nd-badge nd-badge--{{ m.status | lower }}">{{ m.status | replace("-", " ") }}</span>
+        {%- endif %}
+        {%- if m.classification %}
+          <span class="nd-badge nd-badge--{{ m.classification | lower }}" title="Classification">{{ m.classification }}</span>
+        {%- endif %}
+        {%- if m.review_overdue %}
+          <span class="nd-badge nd-badge--overdue" title="Past its review date: the content may be out of date">Review overdue</span>
+        {%- endif %}
+      </div>
+      <dl class="nd-meta__facts">
+        <div><dt>Owner</dt><dd>{{ m.owner }}</dd></div>
+        {%- if m.last_reviewed %}
+        <div><dt>Last reviewed</dt><dd><time datetime="{{ m.last_reviewed }}" title="Review cycle: {{ m.review_cycle_days }} days">{{ m.last_reviewed }}</time></dd></div>
+        {%- endif %}
+        {%- if m.approved_by %}
+        <div><dt>Approved by</dt><dd>{{ m.approved_by }}</dd></div>
+        {%- endif %}
+        {%- if m.version %}
+        <div><dt>Version</dt><dd>{{ m.version }}</dd></div>
+        {%- endif %}
+      </dl>
+    </div>
+  {%- endif %}
+  {{ super() }}
+{% endblock %}

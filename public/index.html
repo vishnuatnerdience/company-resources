@@ -4,15 +4,17 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#0b0b0c">
   <title>Nerdience Company Knowledge Portal</title>
   <meta name="description" content="Internal knowledge portal for Nerdience Technologies employees.">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap">
   <link rel="stylesheet" href="assets/resources.css">
 </head>
 <body class="landing">
+  <a class="skip" href="#main">Skip to content</a>
   <header class="bar">
     <div class="bar__inner">
       <img class="bar__logo" src="assets/nerdience-logo-white.webp" alt="Nerdience" width="120" height="20">
@@ -22,19 +24,55 @@
     </div>
   </header>
 
-  <main class="hero">
-    <div class="hero__box">
-      <p class="eyebrow">Nerdience Technologies</p>
-      <h1>Company Knowledge <span>Portal</span></h1>
-      <p class="lead">Engineering standards, runbooks, HR policies and company information, in one place.</p>
-      <a class="btn" href="home/">Sign in with your work email</a>
-      <p class="hint">You will receive a one-time code at your @nerdience.com address.</p>
-      <ol class="steps">
-        <li><b>1</b>Enter your work email</li>
-        <li><b>2</b>Type the 6-digit code</li>
-        <li><b>3</b>Choose a portal</li>
-      </ol>
-    </div>
+  <!-- PUBLIC page: contains no internal information and no links into the
+       portals (scripts/check_site.py enforces this). -->
+  <main id="main">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero__box">
+        <p class="eyebrow">Nerdience Technologies</p>
+        <h1 id="hero-title">Company Knowledge <span>Portal</span></h1>
+        <p class="lead">Handbook, HR policies, engineering standards and runbooks. Everything you need to work at Nerdience, in one place.</p>
+        <a class="btn" href="home/">Sign in with your work email</a>
+        <p class="hint">Use your @nerdience.com address. You go straight to your portal after signing in.</p>
+        <ol class="steps">
+          <li><b>1</b>Enter your work email</li>
+          <li><b>2</b>Type the 6-digit code</li>
+          <li><b>3</b>Land in your portal</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="contribute" aria-labelledby="contribute-title">
+      <div class="contribute__inner">
+        <div class="contribute__intro">
+          <p class="eyebrow">Contribute</p>
+          <h2 id="contribute-title">Write or update a page</h2>
+          <p>Anyone can suggest a new page or a change. Start from the template, look at the
+            example, and email your file to the docs team. They check it and publish it; it then
+            appears in the portal menu automatically.</p>
+        </div>
+        <ol class="flow">
+          <li><b>1</b><span><strong>Download the template</strong>Fill in the fields between the <code>---</code> lines and write your content.</span></li>
+          <li><b>2</b><span><strong>Check the example</strong>A finished page written from the same template.</span></li>
+          <li><b>3</b><span><strong>Email your .md file</strong>
+            <!-- generated:email:start -->
+          <a class="mail" href="mailto:wikki@nerdience.com?subject=Portal%20document">wikki@nerdience.com</a>
+            <!-- generated:email:end -->
+          </span></li>
+        </ol>
+        <div class="downloads">
+          <a class="dl" href="downloads/template.md" download="template.md">
+            <span class="dl__icon" aria-hidden="true">MD</span>
+            <span class="dl__text"><strong>template.md</strong><span>The template to fill in</span></span>
+          </a>
+          <a class="dl" href="downloads/example.md" download="example.md">
+            <span class="dl__icon" aria-hidden="true">MD</span>
+            <span class="dl__text"><strong>example.md</strong><span>A page written from the template</span></span>
+          </a>
+        </div>
+        <p class="contribute__rule">Never include passwords, tokens, salaries, bank details or personal data.</p>
+      </div>
+    </section>
   </main>
 
   <footer class="foot">
