@@ -27,7 +27,7 @@ classification and review dates are always filled in.
    (also on the portal front page).
 2. Fill in the template in any text editor (Notepad, VS Code, …). Keep the part
    between the two `---` lines and replace the values.
-3. Email the file to the docs team at **wikki@nerdience.com**. Say which section it
+3. Email the file to the docs team at **[wikki@nerdience.com](mailto:wikki@nerdience.com)**. Say which section it
    belongs to, or put it in the `folder:` line.
 4. The docs team checks it, adds it to the right folder in GitHub, and it
    appears in the menu and section pages automatically after the next deploy.
